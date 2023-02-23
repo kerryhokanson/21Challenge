@@ -28,7 +28,11 @@ const resolvers = {
                 { $pull: { savedBooks: { bookId: bookId } } },
                 { new: true }
               );
-        }
+        },
+        login: async (parent, {}) => {
+
+        },
+        
     }
 };
 
