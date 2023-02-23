@@ -25,6 +25,6 @@ type Query {
 type Mutation {
     createUser(): User
     saveBook(bookId: ID!): Book
-    deleteBook(bookId: ID!): Book
+    deleteBook(id: ID!, bookId: ID!): Book
 }
 `
