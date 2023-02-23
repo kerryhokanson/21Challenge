@@ -28,11 +28,14 @@ const resolvers = {
                 { $pull: { savedBooks: { bookId: bookId } } },
                 { new: true }
               );
+              return updatedUser;
         },
-        login: async (parent, {}) => {
+        login: async (parent, {body}) => {
+            const user = await User.findOne({ $or: [{ username: body.username }, { email: body.email }] });
+            const correctPw = await user.isCorrectPassword(body.password);
+            return auth
+        },
 
-        },
-        
     }
 };
 

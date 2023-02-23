@@ -26,11 +26,11 @@ type Auth {
 }
 
 type Query {
-    getSingleUser(id: ID!): User
+    getSingleUser(userId: ID!): User
 }
 
 type Mutation {
-    createUser(): User
+    createUser(username: String, email: String!, password: String!): User
     saveBook(authors:[String], bookId:String!, image:String, link:String, title:String!, description:String): User
     deleteBook(bookId: ID!): User
     login(username: String!, password: String!) : Auth
