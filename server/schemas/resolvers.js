@@ -1,5 +1,7 @@
 const { saveBook } = require('../controllers/user-controller');
 const {User, Book} = require('../models')
+const {signToken} = require('../utils/auth')
+const {AuthenticationError} = require("apollo-server-express")
 
 const resolvers = {
     Query: {
@@ -10,17 +12,24 @@ const resolvers = {
         }
     },
     Mutation: {
-        createUser: async (parent, {body}) => {
-            const user = await User.create(body);
-            return user
+        createUser: async (parent, args) => {
+            const user = await User.create(args);
+            const token = signToken(user)
+            return {user, token}
         },
-        saveBook: async (parent, {user}) => {
+        saveBook: async (parent, {bookData}, context) => {
+            console.log(bookData)
+            if(context.user){
+
+            
             const updatedUser = await User.findOneAndUpdate(
-                { _id: user._id },
-                { $addToSet: { savedBooks: body } },
+                { _id: context.user._id },
+                { $addToSet: { savedBooks: bookData } },
                 { new: true, runValidators: true }
               );
             return updatedUser;
+            }
+            throw new AuthenticationError("need to be logged in")
         },
         deleteBook: async (parent, {user, bookId}) => {
             const updatedUser = await User.findOneAndUpdate(
@@ -30,11 +39,18 @@ const resolvers = {
               );
               return updatedUser;
         },
-        login: async (parent, {body}) => {
-            const user = await User.findOne({ $or: [{ username: body.username }, { email: body.email }] });
-            const correctPw = await user.isCorrectPassword(body.password);
-            return auth
-        },
+        login: async (parent, {email, password}) => {
+            const user = await User.findOne({email});
+            if(!user){
+                throw new AuthenticationError("incorrect credentials")
+            }
+            const correctPw = await user.isCorrectPassword(password);
+            if(!correctPw) {
+                throw new AuthenticationError("incorrect credentials")
+            }
+            const token = signToken(user);
+            return {token, user}
+        }
 
     }
 };

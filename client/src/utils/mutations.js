@@ -1,23 +1,41 @@
 import { gql } from '@apollo/client';
 
 export const LOGIN_USER  = gql`
-mutation loginUser ($username: String!, $password: String!) {
-    login(username: $username, password: $password){
-        User
+mutation loginUser ($email: String!, $password: String!) {
+    login(email: $email, password: $password){
+        user{
+            _id
+            username
+        }
+        token
     }
 }
 `
 export const ADD_USER = gql`
-mutation addUser ($username: String, $email: String! $password: String!) {
+mutation addUser ($username: String!, $email: String! $password: String!) {
     createUser(username: $username, email: $email, password: $password){
-        Auth
+        token
+        user{
+            _id
+            username
+        }
     }
 }
 `
 export const SAVE_BOOK  = gql`
-mutation saveBook ($authors:[String], $bookId:String!, $image:String, $link:String, $title:String!, $description:String) {
-    saveBook(authors:$authors, bookId: $bookId, image: $image, link: $link, title: $title, description: $description){
-        User
+mutation saveBook ($bookData: BookData!) {
+    saveBook(bookData: $bookData){
+        _id
+        username
+        email
+        savedBooks{
+            authors 
+            bookId
+            image
+            link
+            title
+            description
+        }
     }
 }
 `
