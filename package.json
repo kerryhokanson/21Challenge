@@ -9,6 +9,10 @@
     "install": "cd server && npm i && cd ../client && npm i",
     "build": "cd client && npm run build"
   },
+  "engines": {
+    "node": ">16 <17",
+    "npm": ">8 <9"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
