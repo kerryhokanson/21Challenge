@@ -5,20 +5,30 @@ const {AuthenticationError} = require("apollo-server-express")
 
 const resolvers = {
     Query: {
-        getSingleUser: async (parent, {user}) => {
-            return await User.findOne({
-                $or: [{ _id: user ? user._id : params.id }, { username: params.username }],
-              });
+        me: async (parent, args, context) => {
+            conole.log(context.user)
+            if(context.user){
+                return await User.findOne({_id : context.user._id})
+            }
+            throw new AuthenticationError("u messed up")
         }
+        
+
+        // getSingleUser: async (parent, {user}) => {
+        //     return await User.findOne({
+        //         $or: [{ _id: user ? user._id : params.id }, { username: params.username }],
+        //       });
+        // }
     },
     Mutation: {
         addUser: async (parent, {username, email, password}) => {
+            console.log(username, email, password)
             const user = await User.create({username: username, email: email, password: password});
             const token = signToken(user)
             return {user, token}
         },
-        saveBook: async (parent, {bookData}, context) => {
-            console.log(bookData)
+        saveBook: async (_, {bookData}, context) => {
+            console.log(context.user)
             if(context.user){
 
             

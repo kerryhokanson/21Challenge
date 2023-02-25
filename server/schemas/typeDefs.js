@@ -34,7 +34,7 @@ type Auth {
 }
 
 type Query {
-    getSingleUser(userId: ID!): User
+    me: User
 }
 
 type Mutation {
